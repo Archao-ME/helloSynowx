@@ -1,0 +1,21 @@
+<!--index.wxml-->
+<view class="container">
+  <view class="map">
+  <map id="myMap" scale="14" style="width: 100%; height: 300px;" longitude="{{myLocation.longitude}}" latitude="{{myLocation.latitude}}" circles="{{circles}}" show-location></map>
+  </view>
+  <view class="usermotto">
+    <text class="user-motto">{{motto}}</text>
+  </view>
+  <view class="map-list">
+  <view class="input-wrapper">
+    <input class="point-input" value="{{pointContent}}" bindinput="updateInput"></input>
+    <button class='point-add-btn' type="primary" bindtap="savePoint">添加</button>
+  </view>
+    
+    <scroll-view scroll-y style="height: 10rem;" >
+    <view class="map-point-item" >
+      <view wx:for="{{circlesList}}" id="{{index}}" class='map-point-info' bindtap="markCircle" wx:key="unique" data-circles="{{item.circles}}" >{{item.pointContent}} - {{item.latitude}} - {{item.longitude}} - {{item.time}}</view>
+    </view>
+  </scroll-view>
+  </view>
+</view>

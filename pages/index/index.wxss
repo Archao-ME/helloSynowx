@@ -1,0 +1,29 @@
+/**index.wxss**/
+.map {
+  width: 100%;
+}
+.map-list {
+  width: 100%;
+  background: #fbfbfb;
+}
+
+.input-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  margin: 10px;
+}
+.input-wrapper .point-input {
+  flex: 3;
+  height: 100%;
+  border-bottom: 1px solid #999;
+}
+.input-wrapper .point-add-btn {
+  flex: 1;
+  height: 100%;
+
+}
+.map-point-info {
+  border-bottom: 1px solid #999;
+}
