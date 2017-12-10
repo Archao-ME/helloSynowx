@@ -3,6 +3,8 @@
 const app = getApp()
 const Circles = require('../../utils/Circles')
 const AV = require('../../utils/AV')
+const API = require('../../utils/API')
+const util = require('../../utils/util')
 
 Page({
   data: {
@@ -13,7 +15,8 @@ Page({
     circlesList: [],
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
-    pointContent: ''
+    pointContent: '',
+    leanApi: null
   },
   //事件处理函数
   bindViewTap: function() {
@@ -31,19 +34,20 @@ Page({
     })
   },
   onReady: function() {
-    AV.init({
-      appId: 'xxx',
-      appKey: 'xxx'
-    })
+    const Api = new API()
+    this.leanApi = Api.init()
     this.myMap = wx.createMapContext('myMap', this)
-    let query = new AV.Query('Circles')
+    let query = new this.leanApi.Query('Circles')
     let that = this
     query.descending('createdAt').find().then( res => {
       let newCircles = []
       res.forEach((item) => {
         newCircles.push(item.attributes)
       })
-      console.log('newCircles', newCircles)
+      newCircles.map((item) => {
+        item.time = util.formatTime(new Date(item.time))
+        return item
+      })
       this.setData({circlesList: newCircles})
     })
   },
@@ -67,41 +71,45 @@ Page({
     this.setData({pointContent: value})
   },
   markCircle (event) {
-    console.log('event', event)
     let circles = event.currentTarget.dataset.circles
+    console.log('circles', circles)
     this.setData({
       circles: [circles]
     })
     this.setData({
-      myLocation: circles[0] || circles
+      myLocation: circles
     })
   },
   savePoint () {
     let that = this
     this.getMyLocation().then((res) => {
       let circlesApi = new Circles()
-      let newCircles = {
+      let time = new Date().getTime()
+      let newCircle = {
         latitude: res.latitude,
         longitude: res.longitude,
         radius: 100,
         fillColor: "#ffffffFA"
       }
-      let time = new Date().getTime()
       circlesApi.set('time', time)
       circlesApi.set('pointContent', that.data.pointContent)
-      circlesApi.set('circles', newCircles)
-      circlesApi.save().then((res) => {
-        that.setData({
-          circlesList: [{
-            time: time,
-            pointContent: that.data.pointContent,
-            circles: [newCircles]
-          }].concat(that.data.circlesList)
+      circlesApi.set('circles', newCircle)
+      circlesApi.save().then((saveres) => {
+        let newCircles = [{
+          time: time,
+          pointContent: that.data.pointContent,
+          circles: newCircle
+        }].concat(that.data.circlesList)
+        newCircles.map((item) => {
+          item.time = util.formatTime(new Date(item.time))
+          return item
         })
+        this.setData({circlesList: newCircles})
         that.setData({pointContent: ''})
         that.setData({
-          myLocation: res
+          myLocation: saveres
         })
+        console.log('this.data.circlesList', this.data.circlesList)
       }, (err) => {
         console.log('save failds err', err)
       })

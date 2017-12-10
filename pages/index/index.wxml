@@ -14,7 +14,14 @@
     
     <scroll-view scroll-y style="height: 10rem;" >
     <view class="map-point-item" >
-      <view wx:for="{{circlesList}}" id="{{index}}" class='map-point-info' bindtap="markCircle" wx:key="unique" data-circles="{{item.circles}}" >{{item.pointContent}} - {{item.latitude}} - {{item.longitude}} - {{item.time}}</view>
+      <view wx:for="{{circlesList}}" id="{{index}}" class='map-point-info' bindtap="markCircle" wx:key="unique" data-circles="{{item.circles}}" >
+        <view class="content">
+          {{item.pointContent}}
+        </view>
+        <view class="time">
+          {{item.time}}
+        </view>
+      </view>
     </view>
   </scroll-view>
   </view>

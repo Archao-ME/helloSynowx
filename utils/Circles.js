@@ -1,12 +1,18 @@
 const AV = require('./AV.js')
 
 class Circles extends AV.Object {
-  constructor () {
-    super()
-    console.log('constructor circles')
+  get done() {
+    return this.get('done');
   }
-  getAV () {
-    return AV
+  set done(value) {
+    this.set('done', value);
+  }
+
+  get content() {
+    return this.get('content');
+  }
+  set content(value) {
+    this.set('content', value);
   }
 }
 
